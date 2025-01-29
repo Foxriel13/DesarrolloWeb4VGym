@@ -1,0 +1,347 @@
+openapi: 3.0.3
+info:
+  title: 4V GYM - OpenAPI 1.0
+  description: |-
+    API Specification for 4V GYM.
+    The purpose is to manage activities in the GYM
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: miguel_goyena@cuatrovientos.org
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: https://myserver/v1
+tags:
+  - name: activity types
+    description: Everything about the Activity Types of the GYM
+  - name: monitors
+    description: Everything about Monitors of the GYM
+  - name: activities
+    description: Everything about the activities of GYM
+paths:
+  /activity-types:
+    get:
+      tags:
+        - activity types
+      summary: Finds Activities
+      operationId: findActivityTypes
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ActivityType'          
+        '400':
+          description: Any problem in the Server
+          
+  /monitors:
+    get:
+      tags:
+        - monitors
+      summary: Find the available monitors
+      operationId: findMonitors
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Monitor'          
+        '400':
+          description: Any problem in the Server
+    post:
+      tags:
+        - monitors
+      summary: Add a new Monitor to the GYM
+      description: Add a new Monitor to the GYM
+      operationId: addMonitor
+      requestBody:
+        description: Create a new pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitor'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitor'
+        '400':
+          description: Any Error like validations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /monitors/{monitorId}:
+    put:
+      tags:
+        - monitors
+      summary: Update an existing monitor
+      description: Update an existing monitor by Id
+      operationId: updateMonitor
+      parameters:
+        - name: monitorId
+          in: path
+          description: Monitor id to Update
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        description: Update an existent monitor in the GYM
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitor'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitor'
+        '404':
+          description: Monitor not found
+        '400':
+          description: Any other error, like validations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - monitors
+      summary: Deletes a Monitor
+      description: delete a monitor
+      operationId: deleteMonitor
+      parameters:
+        - name: monitorId
+          in: path
+          description: Monitor id to Delete
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '404':
+          description: Monitor not found
+        '400':
+          description: Any other error, like validations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /activities:
+    get:
+      tags:
+        - activities
+      summary: Find the available activities
+      operationId: findActivities
+      parameters:
+        - name: date
+          in: query
+          description: Date to filter, the format is dd-MM-yyyy
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'          
+        '400':
+          description: Any problem in the Server
+    post:
+      tags:
+        - activities
+      summary: Add a new Activity to the GYM
+      description: Add a new Activity to the GYM
+      operationId: addActivity
+      requestBody:
+        description: Create a new Activity in the GYM
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityNew'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+        '400':
+          description: Any Error like validations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /activities/{activityId}:
+    put:
+      tags:
+        - activities
+      summary: Update an existing Activity
+      description: Update an existing activity by Id
+      operationId: updateActivity
+      parameters:
+        - name: activityId
+          in: path
+          description: Activity id to Update
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        description: Update an existent Activity in the GYM
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityNew'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+        '404':
+          description: Activity not found
+        '400':
+          description: Any other error, like validations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - activities
+      summary: Deletes a Activity
+      description: delete a activity
+      operationId: deleteActivity
+      parameters:
+        - name: activityId
+          in: path
+          description: Activity id to Delete
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '404':
+          description: Activity not found
+        '400':
+          description: Any other error, like validations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    ActivityType:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: BodyPump
+        number-monitors:
+          type: integer
+          format: int32
+          example: 2
+    Monitor:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Miguel Goyena
+        email:
+          type: string
+          example: miguel_goyena@cuatrovientos.org
+          format: email
+        phone:
+          type: string
+          example: 654767676
+        photo:
+          type: string
+          example: http://foto.com/miguel.goyena
+          format: url
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 21
+        description:
+          type: string
+          example: The name is mandatory
+    Activity:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        activity_type:
+          $ref: '#/components/schemas/ActivityType'
+        monitors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Monitor'
+        date_start:
+          type: string
+          format: date-time
+        date_end:
+          type: string
+          format: date-time
+    ActivityNew:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        activity_type_id:
+          type: integer
+          format: int64
+          example: 10
+        monitors_id:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: 10
+        date_start:
+          type: string
+          format: date-time
+        date_end:
+          type: string
+          format: date-time
